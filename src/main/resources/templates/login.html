@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #1f1f1f, #2f2f2f); /* Nền gradient tối */
+            color: #fff;
+        }
+
+        h2 {
+            text-align: center;
+            margin-top: 50px;
+            color: #fff;
+            font-size: 36px;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        form {
+            background-color: rgba(0, 0, 0, 0.8); /* Nền tối cho form */
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
+            width: 80%;
+            max-width: 400px;
+        }
+
+        label {
+            font-size: 18px;
+            color: #ddd;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            background-color: #333;
+            color: #fff;
+            border: 1px solid #444;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        input:focus {
+            border-color: #50C878; /* Màu xanh neon khi focus */
+            outline: none;
+        }
+
+        button {
+            background-color: #ff007f; /* Màu đỏ neon */
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            box-shadow: 0 4px 8px rgba(255, 0, 127, 0.6); /* Ánh sáng neon */
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #d4006b; /* Hiệu ứng khi hover */
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(255, 0, 127, 0.8);
+        }
+
+        .back-button {
+            display: inline-block;
+            margin-top: 10px;
+            text-decoration: none;
+            color: #ff007f;
+            font-size: 16px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            color: #d4006b;
+            transform: scale(1.1);
+        }
+    </style>
+    <script>
+        // Hàm gửi yêu cầu đăng nhập đến API
+        async function loginUser() {
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("password").value;
+
+            const loginDto = {
+                email: email,
+                password: password
+            };
+
+            try {
+                const response = await fetch('http://localhost:8080/api/users/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(loginDto)
+                });
+
+                if (response.ok) {
+                    alert('Login successful!');
+                    // Sau khi đăng nhập thành công, chuyển hướng đến trang home.html
+                    window.location.href = 'home.html';
+                } else {
+                    alert('Invalid email or password');
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
+    </script>
+</head>
+<body>
+<div class="container">
+    <h2>Login</h2>
+    <form onsubmit="event.preventDefault(); loginUser();">
+        <label for="email">Email:</label><br>
+        <input type="email" id="email" required><br><br>
+
+        <label for="password">Password:</label><br>
+        <input type="password" id="password" required><br><br>
+
+        <button type="submit">Login</button>
+    </form>
+    <a href="create.html" class="back-button">Create Account</a>
+</div>
+</body>
+</html>

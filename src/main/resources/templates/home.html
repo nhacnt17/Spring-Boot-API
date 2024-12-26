@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #2f2f2f, #1f1f1f); /* Gradient nền tối */
+            color: #fff;
+        }
+
+        h2 {
+            text-align: center;
+            margin-top: 20px;
+            color: #fff;
+            font-size: 36px;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        table {
+            width: 80%;
+            margin-top: 20px;
+            border-collapse: collapse;
+            background-color: rgba(0, 0, 0, 0.8); /* Nền bảng tối */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: center;
+            border-bottom: 1px solid #444;
+        }
+
+        th {
+            background-color: #222;
+            color: #50C878; /* Màu xanh sáng tạo cảm giác gaming */
+        }
+
+        td {
+            color: #fff;
+            font-size: 16px;
+        }
+
+        button {
+            background-color: #ff007f; /* Màu đỏ neon */
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            box-shadow: 0 4px 8px rgba(255, 0, 127, 0.6); /* Ánh sáng neon */
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #d4006b; /* Hiệu ứng khi hover */
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(255, 0, 127, 0.8);
+        }
+
+        .user-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        /* Hiệu ứng khi hover các dòng trong bảng */
+        tr:hover {
+            background-color: rgba(0, 0, 0, 0.6);
+        }
+    </style>
+    <script>
+        // Hàm lấy danh sách người dùng và hiển thị lên trang
+        async function getUsers() {
+            try {
+                const response = await fetch('http://localhost:8080/api/users/getlist');
+                if (response.ok) {
+                    const users = await response.json();
+                    const userTable = document.getElementById('user-table');
+                    userTable.innerHTML = ''; // Xóa danh sách cũ
+                    // Tạo header cho bảng
+                    const headerRow = document.createElement('tr');
+                    headerRow.innerHTML = `
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Action</th>
+                    `;
+                    userTable.appendChild(headerRow);
+
+                    // Tạo các dòng dữ liệu
+                    users.forEach(user => {
+                        const userRow = document.createElement('tr');
+                        userRow.innerHTML = `
+                            <td>${user.name}</td>
+                            <td>${user.email}</td>
+                            <td><button onclick="deleteUser('${user.email}')">Delete</button></td>
+                        `;
+                        userTable.appendChild(userRow);
+                    });
+                } else {
+                    alert('Error fetching users');
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
+
+        // Xử lý xóa người dùng
+        async function deleteUser(email) {
+            try {
+                const response = await fetch(`http://localhost:8080/api/users/deleteEmail/${email}`, {
+                    method: 'DELETE'
+                });
+
+                if (response.ok) {
+                    alert('User deleted successfully!');
+                    getUsers(); // Cập nhật lại danh sách sau khi xóa
+                } else {
+                    alert('Error deleting user');
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
+
+        // Gọi hàm khi trang được tải
+        window.onload = getUsers;
+    </script>
+</head>
+<body>
+<div class="container">
+    <h2>List of Users</h2>
+    <table id="user-table">
+        <!-- Bảng người dùng sẽ được hiển thị ở đây -->
+    </table>
+</div>
+</body>
+</html>

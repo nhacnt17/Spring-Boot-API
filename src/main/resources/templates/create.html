@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create User</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #2f2f2f, #1f1f1f); /* Nền gradient tối */
+            color: #fff;
+        }
+
+        h2 {
+            text-align: center;
+            margin-top: 20px;
+            color: #fff;
+            font-size: 36px;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        form {
+            background-color: rgba(0, 0, 0, 0.8); /* Nền tối cho form */
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+            width: 80%;
+            max-width: 400px;
+        }
+
+        label {
+            font-size: 18px;
+            color: #ddd;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            background-color: #333;
+            color: #fff;
+            border: 1px solid #444;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        input:focus {
+            border-color: #50C878; /* Màu xanh neon khi focus */
+            outline: none;
+        }
+
+        button {
+            background-color: #ff007f; /* Màu đỏ neon */
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            box-shadow: 0 4px 8px rgba(255, 0, 127, 0.6); /* Ánh sáng neon */
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #d4006b; /* Hiệu ứng khi hover */
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(255, 0, 127, 0.8);
+        }
+
+        .back-button {
+            display: inline-block;
+            margin-top: 10px;
+            text-decoration: none;
+            color: #ff007f;
+            font-size: 16px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            color: #d4006b;
+            transform: scale(1.1);
+        }
+
+        #role-container {
+            display: none; /* Ẩn thanh role ban đầu */
+        }
+    </style>
+    <script>
+        // Hàm gửi yêu cầu tạo người dùng đến API
+        async function createUser() {
+            const name = document.getElementById("name").value;
+            const password = document.getElementById("password").value;
+            const email = document.getElementById("email").value;
+            const role = document.getElementById("role").value;
+
+            const userDto = {
+                name: name,
+                password: password,
+                email: email,
+                role: role
+            };
+
+            try {
+                const response = await fetch('http://localhost:8080/api/users/create', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(userDto)
+                });
+
+                if (response.ok) {
+                    alert('User created successfully!');
+                    // Sau khi đăng ký thành công, chuyển hướng đến trang home.html
+                    window.location.href = 'login.html';
+                } else {
+                    alert('Error creating user');
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
+
+        // Hàm xử lý phím tắt Ctrl + R để hiển thị thanh role
+        document.addEventListener('keydown', function(event) {
+            if (event.ctrlKey && event.key === 'z') { // Kiểm tra tổ hợp Ctrl + R
+                event.preventDefault(); // Ngăn trình duyệt refresh trang
+                const roleContainer = document.getElementById('role-container');
+                roleContainer.style.display = roleContainer.style.display === 'none' ? 'block' : 'none';
+            }
+        });
+    </script>
+</head>
+<body>
+<div class="container">
+    <h2>Create User</h2>
+    <form onsubmit="event.preventDefault(); createUser();">
+        <label for="name">Name:</label><br>
+        <input type="text" id="name" required><br><br>
+
+        <label for="email">Email:</label><br>
+        <input type="email" id="email" required><br><br>
+
+        <label for="password">Password:</label><br>
+        <input type="password" id="password" required><br><br>
+
+        <div id="role-container">
+            <label for="role">Role:</label><br>
+            <input type="text" id="role"><br><br>
+        </div>
+
+        <button type="submit">Create User</button>
+    </form>
+    <a href="login.html" class="back-button">Back to Login</a>
+</div>
+</body>
+</html>
